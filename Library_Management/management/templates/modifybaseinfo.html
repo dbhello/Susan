@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}My Account{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-9 col-md-offset-1">
+            <h3 id="left"> 我的基本信息 </h3>
+        </div>
+        <br />
+
+        <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
+            {% if status == 'success' %}
+				<div class="well">
+					<h2 class="text-success text-center">保存成功！</h2>
+				</div>
+			{% endif %}
+            <form method="POST" role="form" class="form-horizontal">
+				{% csrf_token %}
+				<h2 class="form-signin-heading text-center">修改信息</h2>
+
+                <table class="table table-hover" style="border:none;">
+                    <tr>
+                        <th>读者证号：</th>
+                        <td><input type="text" class="form-control" required name = "name" value="{{ user.user.username }}" disabled="disabled"></td>
+                        <th>姓名：</th>
+                        <td><input type="text" class="form-control" required name = "name" value="{{ user.name }}" ></td>
+                    </tr>
+                    <tr>
+                        <th>电话：</th>
+                        <td><input type="text" class="form-control" required name = "phone" value="{{ user.phone }}"></td>
+                        <th>邮箱：</th>
+                        <td><input type="text" class="form-control" required name = "email" value="{{ user.user.email}}" ></td>
+                    </tr>
+                    <tr>
+                        <th>专业：</th>
+                        <td><input type="text" class="form-control" required name = "major" value="{{ user.major }}" ></td>
+                        <th>学院：</th>
+                        <td><input type="text" class="form-control" required name = "academy" value="{{ user.academy }}"></td>
+                    </tr>
+                    <tr>
+                        <th>地址：</th>
+                        <td><input type="text" class="form-control" required name = "address" value="{{ user.address }}"></td>
+                        <th>学历：</th>
+                        <td><input type="text" class="form-control" required name = "education" value="{{ user.education }}"></td>
+                    </tr>
+                    <tr>
+                        <th>政治面貌：</th>
+                        <td><input type="text" class="form-control" required name = "politics" value="{{ user.politics }}"></td>
+                        <th>身份证号：</th>
+                        <td><input type="text" class="form-control" required name = "idcard" value="{{ user.idcard }}"></td>
+                    </tr>
+            </table>
+                <div class="form-group">
+					<div class="col-md-6 col-md-offset-3">
+						<button id="left" class="btn btn btn-primary" type="submit">保存</button>
+                        <p id="right"><a class="btn btn-primary" id="id_revise" href="/myaccount/" role="button">取消</a></p>
+					</div>
+				</div>
+            </form>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}My Account{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-9 col-md-offset-1">
+        <h3>{{ user.name }}-预约请求</h3>
+        </div>
+        <div class="col-md-9 col-md-offset-1">
+            <form role="form" method="post">
+                {% csrf_token %}
+            <table class="table table-hover">
+                <tr>
+                    <th>取书/递送地点：</th>
+                    <td>
+                        <select name="loc">
+                        <option>东校区流通</option>
+                        <option>北校区流通</option>
+                        <option>珠海校区流通</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th>预约有效期：</th>
+                    <td>从{{ resDate|date:"Y-m-d"}} 到 <input type="date" required name="duedate"></td>
+                </tr>
+                <tr>
+                    <th>温馨提醒：</th>
+                    <td>当预约请求超过有效期时，系统将自动取消预约请求，读者需要重新进行预约。</td>
+                </tr>
+             </table>
+            <div class="col-md-4">
+            <p id="left"><button class="btn btn-primary" type="submit">确定</button></p>
+            <p id="right"><a class="btn btn-primary" href="/viewcopies/?isbn={{ bookcopy.book.isbn }}" role="button">取消</a></p>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

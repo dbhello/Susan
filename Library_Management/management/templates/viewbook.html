@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}View Book{% endblock %}
+
+{% block content %}
+
+<div class="container">
+	<div class="row">
+		<div class="col-md-12 col-md-offset-0">
+			<div class="col-md-2">
+				<div class="list-group">
+					<a href="/viewbook/" class="list-group-item" id="id_typ_all">
+						 所有
+					</a>
+					{% for typ in type_list %}
+					<a href="/viewbook?typ={{typ}}" class="list-group-item" id="id_typ_{{typ}}">
+						{{ typ }}
+					</a>
+					{% endfor %}
+				</div>
+				<script type="text/javascript">
+				    var act_typ = document.getElementById("id_typ_{{book_type}}");
+				    var new_class = act_typ.getAttribute("class") + " active"
+				    act_typ.setAttribute("class",new_class);
+				</script>
+			</div>
+			<div class="col-md-9 col-md-offset-0">
+				<div class="col-md-4 col-md-offset-8">
+					<form role="form" method="post" name="search_form">
+						{% csrf_token %}
+						<input type="search" class="form-control" name="keywords" placeholder="输入关键字进行查询" id="id_search_input" onkeyup="whenkeyup()" autofocus="True">
+					</form>
+				</div>
+				<script type="text/javascript">
+					function whenkeyup () {
+						var oldvalue = document.getElementById('id_search_input').value
+						setTimeout(function(){
+							var newvalue = document.getElementById('id_search_input').value
+							if (oldvalue == newvalue) {
+								document.search_form.submit();
+							};
+						},1500);
+					}
+				</script>
+
+
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>No.</th>
+                            <th>封面</th>
+							<th>书名</th>
+							<th>作者</th>
+                            <th>出版社</th>
+							<th>出版日期</th>
+							<th>索书号</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for book in book_list %}
+						<tr>
+							<td>{{ forloop.counter }}</td>
+                            <td><div class="çol-md-1 div-img">
+                                 <img class="img-rounded my-img" src="/{{book.img}}">
+                             </div></td>
+							<td><a href="/viewbook/detail/?isbn={{book.isbn}}">{{ book.name }}</a></td>
+							<td>{{ book.author.name }}</td>
+                            <td>{{ book.publisher.name }}</td>
+							<td>{{ book.pubDate|date:"Y-m-d" }}</td>
+							<td>
+                                <div class="col-md-1">
+                                <p>{{book.call_number}}</p>
+                                    <a class="btn" id="id_revise" href="/viewcopies/?isbn={{book.isbn}}">馆藏复本{{ book.copies_num }}本，已借出{{ book.borrowed_num }}本</a>
+                                </div>
+
+                            </td>
+						</tr>
+						{% empty %}
+						<tr>
+							<td>没有图书</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+				<nav>
+					<ul class="pager">
+						{% if book_list.has_previous %}
+							<li class="previous"><a href="?typ={{book_type}}&page={{ book_list.previous_page_number }}">上一页</a></li>
+						{% else %}
+							<li class="previous disabled"><a href="#">上一页</a></li>
+						{% endif %}
+						Page {{ book_list.number }} / {{ book_list.paginator.num_pages }}
+						{% if book_list.has_next %}
+							<li class="next"><a href="?typ={{book_type}}&page={{ book_list.next_page_number }}">下一页</a></li>
+						{% else %}
+							<li class="next disabled"><a href="#">下一页</a></li>
+						{% endif %}
+					</ul>
+				</nav>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+{% endblock %}

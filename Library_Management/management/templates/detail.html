@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}View Book{% endblock %}
+
+{% block content %}
+
+<div class="container">
+	<div class="row">
+		<div class="col-md-10 col-md-offset-1">
+			<div class="col-md-4">
+				{% if img_list %}
+					<div id="carousel-generic" class="carousel slide" data-ride="carousel">
+						<ol class="carousel-indicators">
+						{% for item in img_list %}
+							<li data-target="#carousel-generic" data-slide-to="{{forloop.counter0}}" {% if forloop.first %}class="active"{% endif %}></li>
+						{% endfor %}
+						</ol>
+						<div class="carousel-inner " role="listbox">
+						{% for img in img_list %}
+							<div {% if forloop.first %}class="item active"{%else%}class="item"{% endif %}>
+								<img class="img-rounded" src="/{{img}}">
+							</div>
+						{% endfor %}
+						</div>
+						<a class="left carousel-control" href="#carousel-generic" role="button" data-slide="prev">
+							<span class="glyphicon glyphicon-chevron-left"></span>
+						</a>
+						<a class="right carousel-control" href="#carousel-generic" role="button" data-slide="next">
+							<span class="glyphicon glyphicon-chevron-right"></span>
+						</a>
+					</div>
+				{% else %}
+					<p class="text-center">No image</p>
+				{% endif %}
+			</div>
+			<div class="col-md-6 col-md-offset-1">
+				<h3 align='center'>{{book.name}}</h3>
+                <h4 align='right'>By
+                    {% for author in authors %}
+                    {{ author.name}}
+                    {% endfor %}
+                </h4>
+                <h4>ISBN：{{ book.isbn }}</h4>
+                <h4>出版时间：{{book.pubDate|date:"Y-m-d"}} </h4>
+                <h4>出版社：{{ book.publisher }}
+                </h4>
+                <h4>图书类型：{{ book.typ }}</h4>
+				<h4>索书号：{{ book.call_number }}</h4>
+                <h4>评级：
+                {% for i in rate_loop %}
+                    <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                {% endfor %}
+                {% for i in rate_loop_empty %}
+                    <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>
+                {% endfor %}
+                </h4>
+                <h4>详情：
+                     {% if book.desc %}
+                        {{book.desc}}
+                    {% else %}
+                         暂无描述
+                    {% endif %}
+                </h4>
+                <h4><a class="btn" href="/viewcopies/?isbn={{book.isbn}}" role="button">点击查看所有单册借阅情况 &raquo;</a></h4>
+            </div>
+		</div>
+        <div class="col-md-9 col-md-offset-1 book_container">
+            <h3 id="left">评论</h3>
+        </div>
+        {% for eval in book_eval %}
+        <div class="col-md-9 col-md-offset-1">
+            <p> {{eval.evalDesc}}</p><br />
+            <p class="eval_date">{{eval.user.name}} {{eval.evalDate|date:"Y-m-d"}}</p>
+        </div>
+        {% empty %}
+        <div class="col-md-9 col-md-offset-1">
+            <p>暂无评价</p>
+        </div>
+        {% endfor %}
+        <div class="col-md-9 col-md-offset-1">
+            <h3 class="headline">添加评论</h3>
+            <form role="form" method="post" name="comment_form">
+                {% csrf_token %}
+                <textarea type="text" id="comment_input" name="comment"></textarea>
+                <button class="btn btn btn-primary" type="submit">提交</button>
+            </form>
+        </div>
+	</div>
+</div>
+
+{% endblock %}

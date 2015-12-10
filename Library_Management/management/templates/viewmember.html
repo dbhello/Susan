@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}View Member{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <div class="col-md-9 col-md-offset-1">
+                <div class="col-md-4 col-md-offset-8">
+                    <form role="form" method="post" name="search_form">
+                        {% csrf_token %}
+                        <input type="search" class="form-control" name="keywords" placeholder="输入关键字进行查询" id="id_search_input" onkeyup="whenkeyup()" autofocus="True">
+                            </form>
+                </div>
+                <script type="text/javascript">
+                    function whenkeyup () {
+                        var oldvalue = document.getElementById('id_search_input').value
+                        setTimeout(function(){
+                                   var newvalue = document.getElementById('id_search_input').value
+                                   if (oldvalue == newvalue) {
+                                   document.search_form.submit();
+                                   };
+                                   },1500);
+                    }
+                </script>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>用户名</th>
+                            <th>昵称</th>
+                            <th>邮箱</th>
+                            <th>角色</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for member in member_list %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td><a href="/myaccount?user={{member.user.username}}/">{{ member.user.username }}</a></td>
+                            <td>{{ member.nickname }}</td>
+                            <td>{{ member.user.email }}</td>
+                            {% if member.permission == 1 %}
+                            <td>普通成员</td>
+                            {% endif %}
+                            {% if member.permission == 2 %}
+                            <td>图书管理员</td>
+                            {% endif %}
+                            {% if member.permission == 0 %}
+                            <td>限制</td>
+                            {% endif %}
+                            <td></td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td>Not found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
