@@ -52,10 +52,10 @@
                         <td>
                             <div class="col-md-1">
                                 {% ifequal sta "others_borrow"%}
-                                    <p><a class="btn btn-primary" href="/addreservation/?id={{ bookcopy.id }}" role="button">预约&raquo;</a></p>
+                                    <p><a class="btn btn-primary" href="/addreservation/?id={{ bookcopy.copy_id }}" role="button">预约&raquo;</a></p>
                                 {% endifequal %}
                                 {% ifequal sta "others_reserved"%}
-                                    <p><a class="btn btn-primary" href="/addreservation/?id={{ bookcopy.id }}" role="button">预约&raquo;</a></p>
+                                    <p><a class="btn btn-primary" href="/addreservation/?id={{ bookcopy.copy_id }}" role="button">预约&raquo;</a></p>
                                 {% endifequal %}
                                 {% ifequal sta "onboard" %}
                                     <p><a class="btn btn-primary" href="/viewcopies/?id={{ bookcopy.id }}" role="button">借书</a></p>

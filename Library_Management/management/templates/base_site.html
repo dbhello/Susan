@@ -1,0 +1,36 @@
+{%extends "base.html"%}
+
+{% load staticfiles %}
+{% block title %}图书馆首页{% endblock %}
+
+{%block  content%}
+
+
+<div class="container">
+	<div class="row">
+		<div class="col-md-12 col-md-offset-0">
+			<div class="col-md-2">
+                <div  class="list-group">
+					<a href="/main/" class="list-group-item" id="home">首页</a>
+					<a href="/addbook/" class="list-group-item" id="addbook">添加图书</a>
+                    <a href="/borrowbook/" class="list-group-item" id="borrowbook">借书</a>
+                    <a href="/returnbook/" class="list-group-item" id="returnbook">还书</a>
+                    <a href="/processreservation/" class="list-group-item" id="processreservation">处理预约</a>
+                    <a href="/notification/" class="list-group-item" id="notification">发布通知</a>
+				</div>
+				<script type="text/javascript">
+				    var act_typ = document.getElementById("{{id_type}}");
+				    var new_class = act_typ.getAttribute("class") + " active"
+				    act_typ.setAttribute("class",new_class);
+				</script>
+			</div>
+
+                {% block pagecontent %}
+                {% endblock %}
+    </div>
+    </div>
+    </div>
+
+
+
+{% endblock%}

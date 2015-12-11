@@ -1,0 +1,111 @@
+{% extends "base_site.html" %}
+
+{%block pagecontent%}
+        <div class="col-md-9 col-md-offset-0">
+                <div class="col-md-6 col-md-offset-0">
+                    {% if status == "information not complete" %}
+                        <div class="well">
+					    <h4 class="text-success text-center">请输入条形码！</h4>
+				        </div>
+                    {% elif status == 'no bookcopy' %}
+				        <div class="well">
+					    <h4 class="text-success text-center">没有找到该书籍！</h4>
+				        </div>
+			        {% elif status == "available" or status == "requested"%}
+                        <div class="well">
+					    <h4 class="text-success text-center">该书籍在架上！</h4>
+				        </div>
+                    {% elif status == "return book succeed" %}
+                        <div class="well">
+					    <h4 class="text-success text-center">还书成功！</h4>
+				        </div>
+                    {% endif %}
+
+					<form role="form" method="post" name="search_form" action="/returnbook/">
+						{% csrf_token %}
+                        <input  type="search" class="form-control" name="barcode" placeholder="输入条形码进行查询" autofocus="True">
+                        <br />
+                        <div class="form-group">
+                             <button type="submit" class="btn btn-primary">查询</button>
+                        </div>
+					</form>
+
+				</div>
+
+            {% if bi %}
+            <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>书名</th>
+                    <th>分馆</th>
+                    <th>索书号</th>
+                    <th>条形码</th>
+                    <th>借书日期</th>
+                    <th>应还日期</th>
+                    {% if status == 'return book succeed' %}
+                        <th>还书日期</th>
+                    {% endif %}
+                    <th>罚款</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% if bookcopy %}
+                <tr>
+                    <td>{{ bookcopy.book.name }}</td>
+                    <td>{{ bookcopy.collection_loc }}</td>
+                    <td>{{ bookcopy.book.call_number }}</td>
+                    <td>{{ bookcopy.barcode }}</td>
+                    <td>{{ bi.BorrowDate|date:"Y-m-d" }}</td>
+                    <td>{{ due|date:"Y-m-d" }}</td>
+                     {% if status == 'return book succeed' %}
+                        <td>{{ bi.ReturnDate|date:"Y-m-d" }}</td>
+                    {% endif %}
+                    <td>${{ fine }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td>没有借书记录</td>
+                </tr>
+                {% endif %}
+            </tbody>
+             </table>
+
+            {% if bi %}
+            <h4>借阅者信息：</h4>
+            <div class="col-md-6 col-md-offset-0">
+                <table class="table table-hover">
+                    <tr>
+                        <th>读者证号</th>
+                        <td>{{ bi.user.user.username }}</td>
+                    </tr>
+                    <tr>
+                        <th>姓名</th>
+                        <td>{{ bi.user.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>学历</th>
+                        <td>{{ bi.user.education }}</td>
+                    </tr>
+                    <tr>
+                        <th>专业</th>
+                        <td>{{ bi.user.major }}</td>
+                    </tr>
+                     <tr>
+                        <th>学院</th>
+                        <td>{{ bi.user.academy }}</td>
+                    </tr>
+                </table>
+                <div class="col-md-6">
+                    {% if status == 'borrowed' %}
+                    <p><a class="btn btn-primary" href="/returnbook/?id={{ bi.bookcopy.copy_id }}" role="button">还书</a></p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        {% endif %}
+
+        </div>
+
+
+{% endblock %}

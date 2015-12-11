@@ -1,14 +1,12 @@
 from django.contrib import admin
 from management.models import *
 
-
-
 class BookAdmin(admin.ModelAdmin):
 	list_display = ('isbn', 'name', 'typ', 'pubDate', 'call_number', 'desc','copies_num','borrowed_num','img')
 
 class BookCopyAdmin(admin.ModelAdmin):
 	list_display = ('copy_id','barcode','status','collection_loc')
-	ordering = ('copy_id',)
+	ordering = ('barcode',)
 
 class AuthorAdmin(admin.ModelAdmin):
 	list_display = ('name','email')
@@ -30,7 +28,7 @@ class ReservationAdmin(admin.ModelAdmin):
 class BorrowInfoAdmin(admin.ModelAdmin):
 	list_display = ('borrow_id','bookcopy','user','BorrowDate','ReturnDate')
 	search_fields = ('user',)
-	ordering = ('borrow_id',)
+	ordering = ('bookcopy',)
 
 class StudentAdmin(admin.ModelAdmin):
 	list_display = ("user","name","phone","address","major","academy","education","politics")

@@ -3,12 +3,14 @@ from django.shortcuts import render, render_to_response
 from django.template import Context, RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
 import datetime
+from django.contrib.auth.decorators import login_required
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib import auth
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from models import *
-
+from django.shortcuts import get_object_or_404
+from forms import *
 
 borrowPeriod = datetime.timedelta(days=30)
 
@@ -24,7 +26,12 @@ def get_type_list():
 def index(req):
 	username = req.session.get('username', '')
 	if username:
-		user = Student.objects.get(user__username=username)
+		if len(username) == 8:
+			user = Student.objects.get(user__username=username)
+		else:
+			user = Librarian.objects.get(user__username=username)
+			content = {'active_menu': 'homepage', 'user': user}
+			return render_to_response('base_site.html', content)
 	else:
 		user = ''
 	content = {'active_menu': 'homepage', 'user': user}
@@ -115,24 +122,16 @@ def addbook(req):
 		user = Librarian.objects.get(user__username=username)
 	else:
 		return HttpResponseRedirect('/login/')
-	if user.permission < 2:
-		return HttpResponseRedirect('/')
-	status = ''
-	if req.POST:
-		post = req.POST
-		newbook = Book(
-			name=post.get('name',''), \
-			isbn=post.get('isbn',''),
-			publisher=post.get('publisher',''),
-			author=post.get('author',''), \
-			typ=post.get('typ',''), \
-			price=post.get('price', ''), \
-			pubDate=post.get('pubdate', ''), \
-			)
-		newbook.save()
-		status = 'success'
-	content = {'user': user, 'active_menu': 'addbook', 'status': status}
-	return render_to_response('addbook.html', content, context_instance=RequestContext(req))
+
+	status = ""
+	if req.method == 'POST':
+		form = BookForm(req.POST or None, req.FILES)
+		if form.is_valid():
+			form.save()
+			status = 'success'
+
+	form = BookForm()
+	return render(req, 'addbook.html', {'form': form,"user":user, 'status':status,'active_menu': 'homepage','id_type':'addbook'})
 
 
 def viewbook(req):
@@ -254,21 +253,24 @@ def addreservation(req):
 		user = Student.objects.get(user__username=username)
 	else:
 		user = ''
+		return HttpResponseRedirect('/login/')
+
 	id = req.GET.get('id','')
 	if id == '':
-		print id
 		return HttpResponseRedirect('/viewbook/')
 	try:
-		bookcopy = BookCopy.objects.get(id=id)
+		bookcopy = BookCopy.objects.get(copy_id=id)
 	except:
 		return HttpResponseRedirect('/viewbook/')
 
 	resDate = datetime.date.today()
 	if req.POST:
 		post = req.POST
-		loc = post.get('loc','')
+		take_loc = post.get('take_loc','')
+		print take_loc
 		dueDate = post.get('duedate','')
-		reservation = Reservation(resDate=resDate,dueDate=dueDate,bookcopy=bookcopy,user=user,status=u'处理中',loc=loc)
+		print dueDate
+		reservation = Reservation(resDate=resDate,dueDate=dueDate,bookcopy=bookcopy,user=user,status=u'处理中',take_loc=take_loc)
 		reservation.save()
 		return HttpResponseRedirect('/viewcopies/?isbn=bookcopy.book.isbn')
 
@@ -292,6 +294,7 @@ def detail(req):
 		user = Student.objects.get(user__username=username)
 	else:
 		user = ''
+
 	isbn = req.GET.get('isbn','')
 	if isbn == '':
 		return HttpResponseRedirect('/viewbook/')
@@ -392,20 +395,7 @@ def borrow(req):
 		user = Student.objects.get(user__username=username)
 	else:
 		user = ''
-	id = req.GET.get('id','')
-	if id:
-		try:
-			bookcopy = BookCopy.objects.get(id=id)
-			book = Book.objects.get(isbn=bookcopy.book.isbn)
-			borrowinfo = BorrowInfo.objects.get(bookcopy=bookcopy,user=user,ReturnDate=None)
-			borrowinfo.ReturnDate = datetime.date.today()
-			borrowinfo.save()
-			bookcopy.status = 'available'
-			bookcopy.save()
-			book.borrowed_num -= 1
-			book.save()
-		except:
-			return HttpResponseRedirect('/myaccount/')
+
 	borrow_info = BorrowInfo.objects.filter(user=user,ReturnDate=None)
 	Due_list = []
 	Fine = []
@@ -450,3 +440,177 @@ def borrowhistory(req):
     now = datetime.datetime.now()
     content = {'user': user, 'active_menu': 'myaccount', 'Due_list': Due_list, 'zipl': zipl, 'now': now}
     return render_to_response("borrowhistory.html",content, context_instance=RequestContext(req))
+
+@login_required
+def borrowbook(req):
+	username = req.session.get('username', '')
+	if username != '':
+		user = Librarian.objects.get(user__username=username)
+	else:
+		user = ''
+		return HttpResponseRedirect('/login/')
+
+	borrowinfo =""
+	status = ""
+	dueDate = ""
+	bookcopy = ""
+	student = ""
+
+	if req.POST:
+		post = req.POST
+		username = post.get('username',"")
+		barcode = post.get('barcode','')
+		if username and barcode:
+			try:
+				student = Student.objects.get(user__username=username)
+				status = "has user"
+			except:
+				status = "no user"
+			else:
+				try:
+					bookcopy = BookCopy.objects.get(barcode=barcode)
+				except:
+					status = "no bookcopy"
+				else:
+					if bookcopy.status == 'borrowed':
+						status = "borrowed"
+						borrowinfo = BorrowInfo.objects.get(bookcopy=bookcopy,ReturnDate=None)
+						dueDate = borrowinfo.BorrowDate + borrowPeriod
+					else:
+						try:
+							reservation = Reservation.objects.get(bookcopy=bookcopy)
+						except:
+							status = "available"
+						else:
+							if reservation.user.user.username != username:
+								status = "requested"
+							else:
+								status = "available"
+		else:
+			status = "information not complete"
+
+	if req.GET:
+		copy_id = req.GET.get('id',"")
+		username = req.GET.get('username',"")
+		bookcopy = BookCopy.objects.get(copy_id=copy_id)
+		student = Student.objects.get(user__username=username)
+		borrows = BorrowInfo.objects.all()
+		if borrows:
+			maxid = borrows[len(borrows)-1].borrow_id
+		else:
+			maxid = 0
+		borrowinfo = BorrowInfo(user=student,bookcopy=bookcopy,BorrowDate=datetime.date.today(),borrow_id=maxid+1)
+		borrowinfo.save()
+		bookcopy.status = 'borrowed'
+		bookcopy.save()
+		book = Book.objects.get(isbn=bookcopy.book.isbn)
+		book.borrowed_num += 1
+		book.save()
+		status = "borrow book succeed"
+		dueDate = datetime.date.today()+borrowPeriod
+
+	content = {'user': user, 'active_menu': 'homepage','bookcopy':bookcopy,'borrowinfo':borrowinfo,\
+			   'due':dueDate,'status':status,\
+			   'id_type':'borrowbook','student':student}
+	return render_to_response("borrowbook.html",content, context_instance=RequestContext(req))
+
+
+@login_required
+def returnbook(req):
+	username = req.session.get('username', '')
+	if username != '':
+		user = Librarian.objects.get(user__username=username)
+	else:
+		user = ''
+		return HttpResponseRedirect('/login/')
+
+	status = ""
+	borrow_info = ""
+	bookcopy = ""
+	fine = 0
+	dueDate = ""
+
+	if req.POST:
+		post = req.POST
+		barcode = post.get('barcode','')
+		if barcode:
+			try:
+				bookcopy = BookCopy.objects.get(barcode=barcode)
+			except BookCopy.DoesNotExist:
+				status = "no bookcopy"
+			else:
+				try:
+					borrow_info = BorrowInfo.objects.get(bookcopy=bookcopy,ReturnDate=None)
+				except BorrowInfo.DoesNotExist:
+					status = "available"
+				else:
+					status = "borrowed"
+					dueDate = borrow_info.BorrowDate + borrowPeriod
+					if dueDate < datetime.date.today():
+						d = (datetime.date.today() - dueDate).days
+						fine = d*0.1
+					else:
+						fine = 0
+		else:
+			status = "information not complete"
+
+	if req.GET:
+		id = req.GET.get('id','')
+		if id:
+			try:
+				bookcopy = BookCopy.objects.get(copy_id=id)
+				book = Book.objects.get(isbn=bookcopy.book.isbn)
+				borrow_info = BorrowInfo.objects.get(bookcopy=bookcopy,ReturnDate=None)
+				borrow_info.ReturnDate = datetime.date.today()
+				borrow_info.save()
+				bookcopy.status = 'available'
+				bookcopy.save()
+				book.borrowed_num -= 1
+				book.save()
+				status = "return book succeed"
+				dueDate = borrow_info.BorrowDate + borrowPeriod
+				if dueDate < datetime.date.today():
+					d = (datetime.date.today() - dueDate).days
+					fine = d*0.1
+				else:
+					fine = 0
+			except Exception as e:
+				print e
+				return HttpResponseRedirect('/returnbook/')
+
+	content = {'user': user, 'active_menu': 'homepage','bi':borrow_info,'bookcopy':bookcopy,'due':dueDate,'fine':fine,'status':status,'id_type':'returnbook'}
+	return render_to_response("returnbook.html",content, context_instance=RequestContext(req))
+
+
+def processreservation(req):
+	username = req.session.get('username', '')
+	if username != '':
+		user = Librarian.objects.get(user__username=username)
+	else:
+		user = ''
+	content = {'user': user, 'active_menu': 'homepage'}
+	return render_to_response("processreservation.html",content, context_instance=RequestContext(req))
+
+
+def notification(req):
+	username = req.session.get('username', '')
+	if username != '':
+		user = Librarian.objects.get(user__username=username)
+	else:
+		user = ''
+	content = {'user': user, 'active_menu': 'homepage'}
+	return render_to_response("notification.html",content, context_instance=RequestContext(req))
+
+
+def adduser(req):
+	username = req.session.get('username', '')
+	if username != '':
+		user = Librarian.objects.get(user__username=username)
+	else:
+		user = ''
+	content = {'user': user, 'active_menu': 'homepage'}
+	return render_to_response("adduser.html",content, context_instance=RequestContext(req))
+
+
+
+

@@ -14,7 +14,6 @@ class Student(models.Model):
     politics = models.CharField(u"政治面貌",max_length = 30)
     academy = models.CharField(u"学院",max_length = 50)
     idcard = models.CharField(u"身份证号",max_length=18)
-
     def __unicode__(self):
         return self.name
 
@@ -69,7 +68,8 @@ class BookCopy(models.Model):
     class META:
         ordering = ['copy_id']
     def __unicode__(self):
-        return u'%s %s' % (self.copy_id,self.book.name)
+        # return u'%s %s' % (self.copy_id,self.book.name)
+        return self.barcode
 
 class Notification(models.Model):
     librarian = models.ForeignKey(Librarian)
@@ -91,7 +91,6 @@ class Message(models.Model):
         ordering = ['msg_time']
     def __unicode__(self):
         return self.msg_title
-
 
 class Reservation(models.Model):
     res_id = models.IntegerField(u"预约编号",primary_key=True)
