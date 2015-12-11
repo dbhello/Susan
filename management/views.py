@@ -120,13 +120,13 @@ def addbook(req):
     if req.POST:
         post = req.POST
         newbook = Book(
-            name=post.get('name', ''), \
+            name=post.get('name', ''),
             isbn=post.get('isbn', ''),
             publisher=post.get('publisher', ''),
-            author=post.get('author', ''), \
-            typ=post.get('typ', ''), \
-            price=post.get('price', ''), \
-            pubDate=post.get('pubdate', ''), \
+            author=post.get('author', ''),
+            typ=post.get('typ', ''),
+            price=post.get('price', ''),
+            pubDate=post.get('pubdate', ''),
             )
         newbook.save()
         status = 'success'
@@ -438,7 +438,7 @@ def borrowhistory(req):
         user = Student.objects.get(user__username=username)
     else:
         user = ''
-    borrow_info = BorrowInfo.objects.filter(user=user).order_by("BorrowDate")
+    borrow_info = BorrowInfo.objects.filter(user=user).order_by("")
     borrowhis = []
     Due_list = []
     Fine = []
