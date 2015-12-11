@@ -438,7 +438,7 @@ def borrowhistory(req):
         user = Student.objects.get(user__username=username)
     else:
         user = ''
-    borrow_info = BorrowInfo.objects.filter(user=user)
+    borrow_info = BorrowInfo.objects.filter(user=user).order_by("BorrowDate")
     borrowhis = []
     Due_list = []
     Fine = []
