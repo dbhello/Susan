@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}My Account{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-9 col-md-offset-1">
+        <h3> 预约请求 </h3>
+        </div>
+        <div class="col-md-9 col-md-offset-1">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>取书地点</th>
+                        <th>书名</th>
+                        <th>预约有效期</th>
+                        <th>书所在分馆</th>
+                        <th>索书号</th>
+                        <th>请求状态</th>
+                        <th>满足日期</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for res in reservation_info %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ res.take_loc }}</td>
+                        <td><a href="/viewbook/detail/?isbn={{res.bookcopy.book.isbn}}">{{ res.bookcopy.book.name }}</a></td>
+                        <td>{{ res.resDate|date:"Y/m/d" }} ~ {{ res.dueDate|date:"Y/m/d" }}</td>
+                        <td>
+                            {{res.bookcopy.collection_loc}}
+                        </td>
+                        <td>{{ res.bookcopy.book.call_number }}</td>
+                        <td>{{ res.status }}</td>
+                        <td>{{ res.satisfyDate|date:"Y/m/d" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td>没有预约请求</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

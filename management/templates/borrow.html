@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}My Account{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+        <h3> 外借列表 </h3>
+        </div>
+        <div class="col-md-10 col-md-offset-1">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>书名</th>
+                        <th>分馆</th>
+                        <th>借书日期</th>
+                        <th>应还日期</th>
+                        <th>罚款</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bi, dl, fi in zipl %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><a href="/viewbook/detail/?isbn={{bi.bookcopy.book.isbn}}">{{ bi.bookcopy.book.name }}</a></td>
+                        <td>
+                        {{ bi.bookcopy.collection_loc }}
+                        </td>
+                        <td>{{ bi.BorrowDate|date:"Y-m-d" }}</td>
+                        <td>{{ dl|date:"Y-m-d" }}</td>
+                        <td>$ {{ fi }}</td>
+                        <td>
+                            <div class="col-md-1">
+                                <p><a class="btn btn-primary" href="/borrow/?id={{ bi.bookcopy.id }}" role="button">还书</a></p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td>没有借阅记录</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+             </table>
+            </div>
+    </div>
+</div>
+
+{% endblock %}
