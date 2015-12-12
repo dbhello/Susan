@@ -588,6 +588,8 @@ def processreservation(req):
 		user = Librarian.objects.get(user__username=username)
 	else:
 		user = ''
+		return HttpResponseRedirect('/login/')
+
 	content = {'user': user, 'active_menu': 'homepage'}
 	return render_to_response("processreservation.html",content, context_instance=RequestContext(req))
 
