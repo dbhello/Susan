@@ -13,15 +13,19 @@
 				        </div>
                     {% elif status == 'no bookcopy' %}
 				        <div class="well">
-					    <h4 class="text-success text-center">没有找到该书籍</h4>
+					    <h4 class="text-success text-center">本馆没有找到该书籍</h4>
 				        </div>
 			        {% elif status == "borrowed" %}
                         <div class="well">
 					    <h4 class="text-success text-center">该书籍已借出</h4>
 				        </div>
-                    {% elif status == "requested" %}
+                    {% elif status == "others_requested" %}
                         <div class="well">
 					    <h4 class="text-success text-center">该书籍已被请求！</h4>
+				        </div>
+                    {% elif status == "my_requested" %}
+                        <div class="well">
+					    <h4 class="text-success text-center">取预约书籍！</h4>
 				        </div>
                     {% elif status == "borrow book succeed"%}
                             <div class="well">
@@ -116,7 +120,7 @@
                     </tr>
                 </table>
                 <div class="col-md-6">
-                    {% if status == "available" %}
+                    {% if status == "available" or status == "my_requested" %}
                     <p><a class="btn btn-primary" href="/borrowbook/?id={{ bookcopy.copy_id }}&username={{ student.user.username }}" role="button">借书</a></p>
                     {% endif %}
                  </div>

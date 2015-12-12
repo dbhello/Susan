@@ -2,6 +2,63 @@
 
 {%block pagecontent%}
 
-
+<div class="col-md-10 col-md-offset-0">
+        <h4>本馆在架图书预约请求</h4>
+        </div>
+        <div class="col-md-10 col-md-offset-0">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>书名</th>
+                        <th>条码</th>
+                        <th>所在分馆</th>
+                        <th>取书地点</th>
+                        <th>单册状态</th>
+                        <th>索书号</th>
+                        <th>请求状态</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for res in res_list %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><a href="/viewbook/detail/?isbn={{res.bookcopy.book.isbn}}">{{ res.bookcopy.book.name }}</a></td>
+                        <td>{{ res.bookcopy.barcode }}</td>
+                        <td>{{res.bookcopy.collection_loc}}</td>
+                        <td>{{ res.take_loc }}</td>
+                        <td>
+                        {% if res.bookcopy.status == "borrowed" %}
+                            已借出
+                        {% elif res.bookcopy.status == "available" %}
+                            外借本
+                        {% endif %}
+                        </td>
+                        <td>{{ res.bookcopy.book.call_number }}</td>
+                        <td>
+                             {{ res.status }}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td>本馆没有在架图书预约请求</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+                <ul class="pager">
+						{% if res_list.has_previous %}
+							<li class="previous"><a href="?page={{ res_list.previous_page_number }}">上一页</a></li>
+						{% else %}
+							<li class="previous disabled"><a href="#">上一页</a></li>
+						{% endif %}
+						Page {{ res_list.number }} / {{ res_list.paginator.num_pages }}
+						{% if res_list.has_next %}
+							<li class="next"><a href="?page={{ res_list.next_page_number }}">下一页</a></li>
+						{% else %}
+							<li class="next disabled"><a href="#">下一页</a></li>
+						{% endif %}
+                </ul>
+        </div>
 
 {% endblock %}

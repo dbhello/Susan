@@ -40,6 +40,7 @@
                     <th>分馆</th>
                     <th>索书号</th>
                     <th>条形码</th>
+                    <th>请求数</th>
                     <th>借书日期</th>
                     <th>应还日期</th>
                     {% if status == 'return book succeed' %}
@@ -56,12 +57,19 @@
                     <td>{{ bookcopy.collection_loc }}</td>
                     <td>{{ bookcopy.book.call_number }}</td>
                     <td>{{ bookcopy.barcode }}</td>
+                    <td>
+                        {% if request %}
+                            1
+                        {% else %}
+                            0
+                        {% endif %}
+                    </td>
                     <td>{{ bi.BorrowDate|date:"Y-m-d" }}</td>
                     <td>{{ due|date:"Y-m-d" }}</td>
                      {% if status == 'return book succeed' %}
                         <td>{{ bi.ReturnDate|date:"Y-m-d" }}</td>
                     {% endif %}
-                    <td>${{ fine }}</td>
+                    <td> CNY {{ fine }}</td>
                 </tr>
                 {% else %}
                 <tr>

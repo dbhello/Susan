@@ -17,9 +17,9 @@
                     <th>取书/递送地点：</th>
                     <td>
                         <select name="take_loc">
-                        <option>东校区流通</option>
-                        <option>北校区流通</option>
-                        <option>珠海校区流通</option>
+                            {% for op in selections %}
+                        <option>{{ op }}</option>
+                            {% endfor %}
                         </select>
                     </td>
                 </tr>

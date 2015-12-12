@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from choice import *
+import datetime
 
 class Student(models.Model):
     user = models.OneToOneField(User)
@@ -14,6 +15,7 @@ class Student(models.Model):
     politics = models.CharField(u"政治面貌",max_length = 30)
     academy = models.CharField(u"学院",max_length = 50)
     idcard = models.CharField(u"身份证号",max_length=18)
+    permission = models.IntegerField(u"权限",default=1)
     def __unicode__(self):
         return self.name
 
@@ -22,6 +24,8 @@ class Librarian(models.Model):
     name = models.CharField(u"姓名",max_length = 16)
     phone = models.CharField(u"电话",max_length = 11)
     address = models.CharField(u"地址",max_length = 300)
+    loc = models.CharField(u"负责校区",max_length=10,choices=LOC_CHOICE,default=u"东校区流通")
+    permission = models.IntegerField(u"权限",default=2)
     def __unicode__(self):
         return self.name
 
@@ -48,7 +52,7 @@ class Book(models.Model):
     typ = models.CharField(u"图书类型",max_length = 128)
     desc = models.CharField(u"详情",max_length=1000)
     copies_num = models.IntegerField(u"复本数目")
-    borrowed_num = models.IntegerField(u"已借复本数目")
+    borrowed_num = models.IntegerField(u"已借复本数目",default=0)
     img = models.ImageField(u"封面",upload_to = 'image')
     author = models.ForeignKey(Author)
     publisher = models.ForeignKey(Publisher)
@@ -63,8 +67,8 @@ class BookCopy(models.Model):
     book = models.ForeignKey(Book)
     copy_id = models.IntegerField(u"单册编号",primary_key=True)
     barcode = models.CharField(u"条形码",max_length=30)
-    status = models.CharField(u"单册状态",max_length=10,choices=BOOK_STATUS,default='外借本')
-    collection_loc = models.CharField(u"馆藏地点",max_length=10,choices=LOC_CHOICE,default='东校区流通')
+    status = models.CharField(u"单册状态",max_length=10,choices=BOOK_STATUS,default=u'外借本')
+    collection_loc = models.CharField(u"馆藏地点",max_length=10,choices=LOC_CHOICE,default=u'东校区流通')
     class META:
         ordering = ['copy_id']
     def __unicode__(self):
@@ -74,7 +78,7 @@ class BookCopy(models.Model):
 class Notification(models.Model):
     librarian = models.ForeignKey(Librarian)
     title = models.CharField(u"通知标题",max_length=50)
-    time = models.DateTimeField(u"通知时间")
+    time = models.DateTimeField(u"通知时间",default=datetime.datetime.today())
     content = models.TextField(u"通知内容")
     class META:
         ordering = ['time']

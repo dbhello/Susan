@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}My Account{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+
+        <div class="col-md-9 col-md-offset-1">
+				<div class="well">
+					<h2 class="text-success text-center">成功预约！</h2>
+				</div>
+
+            <table class="table table-hover">
+                <tr>
+                    <th>书名：</th>
+                    <td>{{ bookcopy.book.name }}</td>
+                </tr>
+                <tr>
+                    <th>单册状态：</th>
+                    <td>
+                        {% if bookcopy.status == "available" %}
+                            外借本
+                        {% elif bookcopy.status == "borrowed" %}
+                            已借出
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>书所在分馆：</th>
+                    <td>{{ bookcopy.collection_loc }}</td>
+                </tr>
+                <tr>
+                    <th>索书号：</th>
+                    <td>{{ bookcopy.book.call_number }}</td>
+                </tr>
+                <tr>
+                    <th>条码：</th>
+                    <td>{{ bookcopy.barcode }}</td>
+                </tr>
+                <tr>
+                    <th>取书/递送地点：</th>
+                    <td>{{ reservation.take_loc }}</td>
+                </tr>
+                <tr>
+                    <th>预约有效期：</th>
+                    <td>从{{ reservation.resDate|date:"Y-m-d"}} 到{{ reservation.dueDate|date:"Y-m-d"}}</td>
+                </tr>
+                <tr>
+                    <th>温馨提醒：</th>
+                    <td>当预约请求超过有效期时，系统将自动取消预约请求，读者需要重新进行预约。</td>
+                </tr>
+             </table>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base_site.html" %}
+{%load bootstrap%}
+{%block pagecontent%}
+<div class="col-md-9 col-md-offset-0">
+		<div class="col-md-6 col-md-offset-1 col-sm-10 col-sm-offset-1">
+            <table class="table table-hover">
+                    <tr>
+                        <th>外借</th>
+                        <td><a href="/borrow/">{{ borrow_num }}</a></td>
+                    </tr>
+                    <tr>
+                        <th>借阅历史</th>
+                        <td><a href="/borrowhistory/">{{ borrowhistory_num }}</a></td>
+                    </tr>
+                    <tr>
+                        <th>预约请求</th>
+                        <td><a href="/reservation/" >{{ reservation_num }}</a></td>
+                    </tr>
+            </table>
+        </div>
+</div>
+{% endblock %}

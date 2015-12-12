@@ -20,7 +20,9 @@
                         <th>架位</th>
                         <th>请求数</th>
                         <th>条码</th>
+                        {% if user.permission < 2 %}
                         <th></th>
+                        {% endif %}
                     </tr>
                 </thead>
                 <tbody>
@@ -28,20 +30,20 @@
                     <tr>
                         <td>{{ forloop.counter }}</td>
                         <td>
-                            {% ifequal bookcopy.status 'borrowed' %}
+                            {% if bookcopy.status == 'borrowed' %}
                                 已借出
-                            {% endifequal %}
-                            {% ifequal bookcopy.status 'available' %}
+                            {% elif bookcopy.status == 'available' %}
                                 外借本
-                            {% endifequal %}
+                            {% endif %}
                         </td>
                         <td>
-                            {% ifequal bookcopy.status 'borrowed' %}
+                            {% if bookcopy.status == 'borrowed' %}
                                 {{ duedate|date:"Y-m-d" }}
-                            {% endifequal %}
-                            {% ifequal bookcopy.status 'available' %}
+                            {% elif sta == 'onboard' %}
                                  在架上
-                            {% endifequal %}
+                            {% elif sta == 'my_reserved' or sta == 'others_reserved' %}
+                                已被请求
+                            {% endif %}
                         </td>
                         <td>
                             {{ bookcopy.collection_loc}}
@@ -49,26 +51,22 @@
                         <td>{{ bookcopy.book.call_number }}</td>
                         <td>{{ request }}</td>
                         <td>{{ bookcopy.barcode }}</td>
+                    {% if user.permission < 2 %}
                         <td>
                             <div class="col-md-1">
-                                {% ifequal sta "others_borrow"%}
+                                {% if sta == "others_borrow" or sta == "onboard" %}
                                     <p><a class="btn btn-primary" href="/addreservation/?id={{ bookcopy.copy_id }}" role="button">预约&raquo;</a></p>
-                                {% endifequal %}
-                                {% ifequal sta "others_reserved"%}
-                                    <p><a class="btn btn-primary" href="/addreservation/?id={{ bookcopy.copy_id }}" role="button">预约&raquo;</a></p>
-                                {% endifequal %}
-                                {% ifequal sta "onboard" %}
-                                    <p><a class="btn btn-primary" href="/viewcopies/?id={{ bookcopy.id }}" role="button">借书</a></p>
-                                {% endifequal %}
-                                {% ifequal sta "my_borrow" %}
-                                    <p><a class="btn btn-primary" href="/viewcopies/?id={{ bookcopy.id }}" role="button">还书</a></p>
-                                {% endifequal %}
-                                {% ifequal sta "my_reserved" %}
-                                    <p><a class="btn" href="#" role="button">已预约</a></p>
-                                {% endifequal %}
-                            </div>
+                                {% elif sta == "my_reserved" %}
+                                    <p><a class="btn" href="#" role="button">我已预约</a></p>
+                                {% elif sta == "others_reserved" %}
+                                    <p><a class="btn" href="#" role="button">已被他人预约</a></p>
+                                {% elif sta == "my_borrow" %}
+                                    <p><a class="btn" href="#" role="button">已借此书</a></p>
+                                {% endif %}
 
+                            </div>
                         </td>
+                    {% endif %}
                     </tr>
                     {% empty %}
                     <tr>

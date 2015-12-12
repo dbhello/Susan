@@ -3,6 +3,7 @@ from management.models import *
 
 class BookAdmin(admin.ModelAdmin):
 	list_display = ('isbn', 'name', 'typ', 'pubDate', 'call_number', 'desc','copies_num','borrowed_num','img')
+	search_fields = ('isbn',)
 
 class BookCopyAdmin(admin.ModelAdmin):
 	list_display = ('copy_id','barcode','status','collection_loc')

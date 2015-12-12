@@ -64,6 +64,7 @@
                 <h4><a class="btn" href="/viewcopies/?isbn={{book.isbn}}" role="button">点击查看所有单册借阅情况 &raquo;</a></h4>
             </div>
 		</div>
+
         <div class="col-md-9 col-md-offset-1 book_container">
             <h3 id="left">评论</h3>
         </div>
@@ -77,6 +78,8 @@
             <p>暂无评价</p>
         </div>
         {% endfor %}
+
+     {% if user.permission < 2 %}
         <div class="col-md-9 col-md-offset-1">
             <h3 class="headline">添加评论</h3>
             <form role="form" method="post" name="comment_form">
@@ -85,6 +88,7 @@
                 <button class="btn btn btn-primary" type="submit">提交</button>
             </form>
         </div>
+    {% endif %}
 	</div>
 </div>
 

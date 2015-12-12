@@ -117,15 +117,15 @@ def gen_bookcopy():
     print "generate bookcopy"
     book = Book.objects.all()
     barcode = 6900000000
-    collection_loc = [u'东校区流通',u'北校区流通',u'南校区流通']
+    collection_loc = [u'东校区流通',u'北校区流通',u'南校区流通',u'珠海校区流通']
     id = 1
     for b in book:
         for i in range(b.borrowed_num):
-            bookcopy = BookCopy(book=b,copy_id=id,barcode=str(barcode+id),status="borrowed",collection_loc=collection_loc[i%3])
+            bookcopy = BookCopy(book=b,copy_id=id,barcode=str(barcode+id),status="borrowed",collection_loc=collection_loc[i%len(collection_loc)])
             bookcopy.save()
             id+=1
         for j in range(b.copies_num-b.borrowed_num):
-            bookcopy = BookCopy(book=b,copy_id=id,barcode=str(barcode+id),status="available",collection_loc=collection_loc[j%3])
+            bookcopy = BookCopy(book=b,copy_id=id,barcode=str(barcode+id),status="available",collection_loc=collection_loc[j%len(collection_loc)])
             bookcopy.save()
             id+=1
 
@@ -174,6 +174,7 @@ def gen_user(n =100):
     group = auth.Group.objects.get(name=u'图书管理员')
     tid = 1000
     name = [u"黄",u"林",u"杨"]
+    loc = [u'东校区流通',u'北校区流通',u'南校区流通',u'珠海校区流通']
     print "adding librarian"
     for i in range(n/5):
         try:
@@ -186,7 +187,7 @@ def gen_user(n =100):
             except:
                 user = auth.User.objects.get(username=t_id)
             lib = Librarian(user=user,phone="1358060"+str(phoneid+i),address=u"中山大学",\
-                name=name[i%len(name)]+str(i))
+                name=name[i%len(name)]+str(i),loc=loc[i%len(loc)])
             lib.save()
         except Exception as e:
             print e
@@ -226,15 +227,16 @@ def gen_reservation():
     abookcopy = BookCopy.objects.filter(status="available")
     student = Student.objects.all()[:20]
     id = 1
+    loc = [u'东校区流通',u'北校区流通',u'南校区流通',u'珠海校区流通']
     for i,bc in enumerate(bookcopy):
-        r = random.randint(1,3)
+        r = random.randint(1,2)
         if r==2:
             borrow = BorrowInfo.objects.filter(bookcopy=bc)
             for b in borrow:
                 if b.user.user.username != student[i%len(student)].user.username:
                     resDate=b.BorrowDate+delay
                     reservation = Reservation(bookcopy=bc,user=student[i%len(student)],resDate=resDate,dueDate=resDate+period,
-                                              status=u"处理中",take_loc=u"东校区流通",res_id=id)
+                                              status=u"处理中",take_loc = loc[i%len(loc)],res_id=id)
                     try:
                         reservation.save()
                         id = id + 1
@@ -242,18 +244,19 @@ def gen_reservation():
                         print e
                         continue
 
-    loc = [u'东校区流通',u'北校区流通',u'南校区流通']
     for i,bc in enumerate(abookcopy):
-        r = random.randint(1,3)
+        r = random.randint(1,2)
         if r == 2:
             take_loc = list(loc)
             take_loc.remove(bc.collection_loc)
             resDate = datetime.date(2015,11,random.randint(15,30))
-            reservation = Reservation(status=u"处理中",resDate=resDate,dueDate=resDate+period,take_loc=take_loc[i%len(take_loc)],res_id=id)
+            reservation = Reservation(bookcopy=bc,user=student[i%len(student)],resDate=resDate,dueDate=resDate+period,\
+                                      status=u"处理中",take_loc=take_loc[i%len(take_loc)],res_id=id)
             try:
                 reservation.save()
                 id += 1
             except:
+                print e
                 continue
 
 def gen_bookeval():

@@ -1,0 +1,43 @@
+{% extends "base_site.html" %}
+{%load bootstrap%}
+{%block pagecontent%}
+<div class="col-md-7 col-md-offset-1">
+
+        <div class="col-md-10 col-md-offset-0">
+            <h4 id="left"> 我的基本信息 </h4>
+            <p id="right"><a class="btn btn-primary" id="id_revise" href="/modifybaseinfo/" role="button">编辑</a></p>
+        </div>
+            <table class="table table-hover">
+                    <tr>
+                        <th>读者证号：</th>
+                        <td>{{ user.user.username }}</td>
+                        <th>姓名：</th>
+                        <td>{{ user.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>电话：</th>
+                        <td>{{ user.phone }}</td>
+                        <th>邮箱：</th>
+                        <td>{{ user.user.email }}</td>
+                    </tr>
+                    <tr>
+                        <th>专业：</th>
+                        <td>{{ user.major }}</td>
+                        <th>学院：</th>
+                        <td>{{ user.academy }}</td>
+                    </tr>
+                    <tr>
+                        <th>地址：</th>
+                        <td>{{ user.address }}</td>
+                        <th>学历：</th>
+                        <td>{{ user.education }}</td>
+                    </tr>
+                    <tr>
+                        <th>政治面貌：</th>
+                        <td>{{ user.politics }}</td>
+                        <th>身份证号：</th>
+                        <td>{{ user.idcard }}</td>
+                    </tr>
+            </table>
+</div>
+{% endblock %}

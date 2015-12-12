@@ -32,21 +32,23 @@
 				<div class="collapse navbar-collapse" id="navbar-collapse-basepage">
 					<ul class="nav navbar-nav">
 						<li id="homepage"><a href="/">主页</a></li>
-						{% if user.permission > 1 %}
-							<li id="addbook"><a href="/addbook/">添加图书</a></li>
-                            <li id="View Member"><a href="/viewmember?userid = {{user.id}}/">浏览成员</a></li>
-						{% endif %}
+{#						{% if user.permission > 1 %}#}
+{#							<li id="addbook"><a href="/addbook/">添加图书</a></li>#}
+{#                            <li id="View Member"><a href="/viewmember?userid = {{user.id}}/">浏览成员</a></li>#}
+{#						{% endif %}#}
+{#                        {% if user and user.permission < 2 %}#}
 						<li id="viewbook"><a href="/viewbook/">浏览图书</a></li>
+{#                        {% endif %}#}
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
 						{% if user %}
 							<li><p class="navbar-text">欢迎&nbsp;&nbsp;<span id="base_name">{{ user.name }}</span></p></li>
-                            <li><a href="/myaccount/">我的账户</a></li>
+{#                            <li><a href="/myaccount/">我的账户</a></li>#}
 							<li><a href="/logout/">退出</a></li>
-							<li><a href="/setpasswd/">修改密码</a></li>
+							<li id="setpasswd"><a href="/setpasswd/">修改密码</a></li>
 						{% else %}
-							<li><a href="/signup/">注册</a></li>
-							<li><a href="/login/">登录</a></li>
+{#							<li><a href="/signup/">注册</a></li>#}
+							<li id="login"><a href="/login/">登录</a></li>
 						{% endif %}
 					</ul>
 				</div>
@@ -57,7 +59,12 @@
 		<!-- header -->
 		<header id="header-base">
 			<div class="container" >
-				<h1>图书管理系统</h1>
+				<h2>
+                    图书管理系统
+                    {% if user and user.permission == 2 %}
+                            {{ user.loc }}
+                    {% endif %}
+                </h2>
 			</div>
 		</header>
 		<!-- /.header -->
@@ -66,13 +73,13 @@
 		<!-- /.main -->
 	
 		<!-- footer -->	
-{#		<footer class="footer" role="contentinfo">#}
-{#			<hr>#}
-{#			<div class="container">#}
-{#				<p class="text-center"><strong>Sun Yat-sen University</strong></p>#}
-{#				<p class="text-center">©All rights reserved</p>#}
-{#			</div>#}
-{#		</footer>#}
+		<footer class="footer" role="contentinfo">
+			<hr>
+			<div class="container">
+				<p class="text-center"><strong>Sun Yat-sen University</strong></p>
+				<p class="text-center">©All rights reserved</p>
+			</div>
+		</footer>
 		<!-- /.footer-->
 		<script type="text/javascript">
 		    var act = document.getElementById("{{ active_menu }}");

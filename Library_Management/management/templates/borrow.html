@@ -1,15 +1,11 @@
-{% extends "base.html" %}
-{% load staticfiles %}
-{% block title %}My Account{% endblock %}
+{% extends "base_site.html" %}
+{%load bootstrap%}
+{%block pagecontent%}
 
-{% block content %}
-
-<div class="container">
-    <div class="row">
-        <div class="col-md-10 col-md-offset-1">
-        <h3> 外借列表 </h3>
+        <div class="col-md-10 col-md-offset-0">
+        <h4> 外借列表 </h4>
         </div>
-        <div class="col-md-10 col-md-offset-1">
+        <div class="col-md-10 col-md-offset-0">
             <table class="table table-hover">
                 <thead>
                     <tr>
@@ -19,7 +15,6 @@
                         <th>借书日期</th>
                         <th>应还日期</th>
                         <th>罚款</th>
-                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -32,12 +27,7 @@
                         </td>
                         <td>{{ bi.BorrowDate|date:"Y-m-d" }}</td>
                         <td>{{ dl|date:"Y-m-d" }}</td>
-                        <td>$ {{ fi }}</td>
-                        <td>
-                            <div class="col-md-1">
-                                <p><a class="btn btn-primary" href="/borrow/?id={{ bi.bookcopy.id }}" role="button">还书</a></p>
-                            </div>
-                        </td>
+                        <td> CNY {{ fi }}</td>
                     </tr>
                     {% empty %}
                     <tr>
@@ -47,7 +37,4 @@
                 </tbody>
              </table>
             </div>
-    </div>
-</div>
-
 {% endblock %}

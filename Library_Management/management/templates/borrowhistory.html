@@ -1,15 +1,10 @@
-{% extends "base.html" %}
-{% load staticfiles %}
-{% block title %}My Account{% endblock %}
-
-{% block content %}
-
-<div class="container">
-    <div class="row">
-        <div class="col-md-10 col-md-offset-1">
+{% extends "base_site.html" %}
+{%load bootstrap%}
+{%block pagecontent%}
+        <div class="col-md-10 col-md-offset-0">
         <h3> 借阅历史 </h3>
         </div>
-        <div class="col-md-10 col-md-offset-1">
+        <div class="col-md-10 col-md-offset-0">
             <table class="table table-hover">
                 <thead>
                     <tr>
@@ -33,7 +28,7 @@
                         <td>{{ bi.BorrowDate|date:"Y-m-d" }}</td>
                         <td>{{ bi.ReturnDate|date:"Y-m-d" }}</td>
                         <td>{{ dl|date:"Y-m-d" }}</td>
-                        <td>$ {{ fi }}</td>
+                        <td> CNY {{ fi }}</td>
                     </tr>
                     {% empty %}
                     <tr>
@@ -43,7 +38,5 @@
                 </tbody>
              </table>
             </div>
-    </div>
-</div>
 
 {% endblock %}
