@@ -82,11 +82,30 @@ def signup(req):
 	content = {'active_menu': 'homepage', 'status': status, 'user': ''}
 	return render_to_response('signup.html', content, context_instance=RequestContext(req))
 
+def check_overdue():
+    # remindPeriod = datetime.timedelta(5)
+    not_return_list = BorrowInfo.objects.filter(ReturnDate=None)
+    overdue_date_list = []
+    for borrow in not_return_list:
+        if borrow.BorrowDate+borrowPeriod < datetime.date.today():
+            overdue_date_list.append(borrow)
+    if overdue_date_list:
+        for overdue_date in overdue_date_list:
+            student = overdue_date.user
+            mail_address = student.user.email
+            bookCopy_name = overdue_date.bookcopy.book.name
+            bookCopy_duedate = overdue_date.BorrowDate+borrowPeriod
+            send_message = u"亲爱的用户" + student.name + ",\n" \
+                            + u"你的图书：" + bookCopy_name + u"已过期，请及时归还。\n" \
+                                + u"应当归还的日期为：" + bookCopy_duedate.strftime("%Y-%m-%d")
+            subject = u"--------图书归还提醒--------"
+
+            send_mail(subject, send_message, "1935003573@qq.com", (mail_address, ))
+
 
 def login(req):
 	if req.session.get('username', ''):
 		#update the reservation in database each time the user login
-		updateReservation()
 		return HttpResponseRedirect('/')
 	status = ''
 	if req.POST:
@@ -98,6 +117,8 @@ def login(req):
 			if user.is_active:
 				auth.login(req, user)
 				req.session['username'] = username
+				updateReservation()
+				# check_overdue()
 				return HttpResponseRedirect('/')
 			else:
 				status = 'not_active'
