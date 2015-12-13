@@ -154,7 +154,7 @@ def gen_user(n =100):
     for i in range(n):
         try:
             s_id = str(sid+i)
-            user = auth.User(username=s_id,email="193500"+str(phoneid+i)+"@qq.com")
+            user = auth.User(username=s_id,email="gzlyp2011@163.com")
             user.set_password(123456)
             try:
                 user.save()
@@ -280,10 +280,11 @@ def gen_bookeval():
 
 def gen_notification(n=5):
     print "generate notificaiton"
-    librarian = Librarian.objects.all()
+    Notification.objects.all().delete()
     title = [u"新书上架",u"热书推荐",u"借阅须知"]
+    person = [u"张小明",u"黄灵",u"陈小东",u"吴名"]
     for i in range(n):
-        notification = Notification(librarian=librarian[i%len(librarian)],title=title[i%len(title)],
+        notification = Notification(pub_person=person[i%len(person)],title=title[i%len(title)],
                                     time=datetime.datetime(2015,(i+1)%12,20),content=u"通知通知"*10)
         try:
             notification.save()

@@ -1,13 +1,18 @@
+#coding=utf8
 from django.contrib import admin
 from management.models import *
 
 class BookAdmin(admin.ModelAdmin):
-	list_display = ('isbn', 'name', 'typ', 'pubDate', 'call_number', 'desc','copies_num','borrowed_num','img')
+	list_display = ('isbn', 'name', 'typ', 'pubDate', 'call_number', 'desc','copies_num','borrowed_num')
+	ordering = ('isbn',)
 	search_fields = ('isbn',)
 
+
 class BookCopyAdmin(admin.ModelAdmin):
-	list_display = ('copy_id','barcode','status','collection_loc')
+	list_display = ('copy_id','book','barcode','status','collection_loc')
 	ordering = ('barcode',)
+	search_fields = ('barcode',)
+
 
 class AuthorAdmin(admin.ModelAdmin):
 	list_display = ('name','email')
@@ -18,8 +23,10 @@ class PublisherAdmin(admin.ModelAdmin):
 	ordering = ('publisher_id',)
 
 class NotificationAdmin(admin.ModelAdmin):
-	list_display = ('time','content','librarian')
+	list_display = ('title','time','content')
+	search_fields = ('title',)
 	ordering = ('time',)
+
 
 class ReservationAdmin(admin.ModelAdmin):
 	list_display = ('res_id','user','resDate','dueDate','status','satisfyDate','take_loc')

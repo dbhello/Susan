@@ -1,19 +1,14 @@
 #coding:utf8
-from django.shortcuts import render, render_to_response
-from django.template import Context, RequestContext
-from django.http import HttpResponse, HttpResponseRedirect
 import datetime
-from django.contrib.auth.decorators import login_required
-from django import forms
-from django.contrib.auth.models import User
 from django.contrib import auth
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from models import *
-from django.shortcuts import get_object_or_404
-from forms import *
+from django.http import HttpResponseRedirect
+from django.shortcuts import render, render_to_response
+from django.template import RequestContext
 
-borrowPeriod = datetime.timedelta(days=30)
-reservedPeriod = datetime.timedelta(days=7)
+from forms import *
+from mail_notification import *
+
 
 def get_type_list():
 	book_list = Book.objects.all()
@@ -41,9 +36,17 @@ def index(req):
 	username = req.session.get('username', '')
 	if username:
 		if len(username) == 8:
-			user = Student.objects.get(user__username=username)
+			try:
+				user = Student.objects.get(user__username=username)
+			except Student.DoesNotExist:
+				authuser = User.objects.get(user__username=username)
+				user = Student(user=authuser)
 		else:
-			user = Librarian.objects.get(user__username=username)
+			try:
+				user = Librarian.objects.get(user__username=username)
+			except Librarian.DoesNotExist:
+				authuser = User.objects.get(user__username=username)
+				user = Librarian(user=authuser)
 	else:
 		user = ''
 		return HttpResponseRedirect('/login/')
@@ -166,6 +169,9 @@ def viewbook(req):
 
 	type_list = get_type_list()
 	book_type = req.GET.get('typ', 'all')
+	search_type = 'book_name'
+	zip = [("radio1","book_name","书名"),("radio2","author","作者"),("radio3","pubdate","出版年份")]
+
 	if book_type == '':
 		book_lst = Book.objects.all()
 	elif book_type not in type_list:
@@ -177,8 +183,24 @@ def viewbook(req):
 	if req.POST:
 		post = req.POST
 		keywords = post.get('keywords','')
-		book_lst = Book.objects.filter(name__contains=keywords)
-		book_type = 'all'
+		if post.get('type','')=='book_name':
+			if book_type == 'all':
+				book_lst = Book.objects.filter(name__contains=keywords)
+			else:
+				book_lst = Book.objects.filter(name__contains=keywords,typ=book_type)
+		elif post.get('type','')=='author':
+			search_type = 'author'
+			if book_type == 'all':
+				book_lst = Book.objects.filter(author__name__contains=keywords)
+			else:
+				book_lst = Book.objects.filter(author__name__contains=keywords,typ=book_type)
+		else:
+			search_type = 'pubdate'
+			if book_type == "all":
+				book_lst = Book.objects.filter(pubDate__contains=keywords)
+			else:
+				book_lst = Book.objects.filter(pubDate__contains=keywords,typ=book_type)
+		# book_type = 'all'
 
 	paginator = Paginator(book_lst, 5)
 	page = req.GET.get('page')
@@ -189,7 +211,7 @@ def viewbook(req):
 	except EmptyPage:
 		book_list = paginator.page(paginator.num_pages)
 
-	content = {'user': user, 'active_menu': 'viewbook', 'type_list': type_list, 'book_type': book_type, 'book_list': book_list}
+	content = {'user': user, 'active_menu': 'viewbook','search_type':search_type,'zip':zip, 'type_list': type_list, 'book_type': book_type, 'book_list': book_list}
 	return render_to_response('viewbook.html', content, context_instance=RequestContext(req))
 
 
@@ -284,6 +306,7 @@ def addreservation(req):
 		post = req.POST
 		take_loc = post.get('take_loc','')
 		dueDate = post.get('duedate','')
+		print dueDate
 		reservation = Reservation(resDate=resDate,dueDate=dueDate,bookcopy=bookcopy,user=user,status=u'处理中',take_loc=take_loc)
 		reservation.save()
 		content =  {'user':user,'active_menu':'viewbook','bookcopy':bookcopy,'reservation':reservation}
@@ -349,16 +372,36 @@ def detail(req):
 def myaccount(req):
     username = req.session.get('username', '')
     if username != '':
-        user = Student.objects.get(user__username=username)
+        user = Librarian.objects.get(user__username=username)
     else:
         user = ''
-        return HttpResponseRedirect('/index/')
-    borrow_num = len(BorrowInfo.objects.filter(user=user,ReturnDate=None))
-    borrowhistory_num = len(BorrowInfo.objects.filter(user=user))-borrow_num
-    reservation_num = len(Reservation.objects.filter(user=user))
-    content = {'user': user, 'active_menu': 'myaccount', 'borrow_num':borrow_num,
-			   'borrowhistory_num':borrowhistory_num,'reservation_num':reservation_num}
-    return render_to_response('myaccount.html', content)
+        return HttpResponseRedirect('/login/')
+
+    content = {'user': user, 'active_menu': 'myaccount'}
+    return render_to_response('myaccount.html', content, context_instance=RequestContext(req))
+
+def editbaseinfo(req):
+	username = req.session.get('username', '')
+	if username != '':
+		user = Librarian.objects.get(user__username=username)
+	else:
+		user = ''
+		return HttpResponseRedirect('/login/')
+
+	if req.POST:
+		post = req.POST
+		user.name = post.get('name',"")
+		user.phone = post.get('phone',"")
+		user.address = post.get('address',"")
+		user.loc = post.get('loc','')
+		user.email = post.get('email','')
+		user.save()
+		content = {'user': user, 'active_menu': 'myaccount'}
+		return render_to_response('myaccount.html', content, context_instance=RequestContext(req))
+
+
+	content = {'user': user, 'active_menu': 'myaccount'}
+	return render_to_response('editbaseinfo.html', content, context_instance=RequestContext(req))
 
 def viewmember(req):
     username = req.session.get('username', '')
@@ -623,7 +666,7 @@ def returnbook(req):
 				borrow_info.ReturnDate = datetime.date.today()
 				borrow_info.save()
 				bookcopy.status = 'available'
-				# bookcopy.collection_loc = user.loc  #attention, revise the locations
+				bookcopy.collection_loc = user.loc  #attention, revise the locations
 				bookcopy.save()
 				book.borrowed_num -= 1
 				book.save()
@@ -638,6 +681,8 @@ def returnbook(req):
 						reservation.satisfyDate = datetime.date.today()
 						reservation.save()
 						####send a reservation satisfied email
+						print "send email"
+						reservation_mail_notificaiton(reservation)
 
 				except Reservation.DoesNotExist:
 					REQUEST = False

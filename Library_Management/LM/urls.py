@@ -34,5 +34,6 @@ urlpatterns = patterns('',
     url(r'^viewnotification/$',views.viewnotification),
     url(r'^viewbaseinfo/$',views.viewbaseinfo),
     url(r'^circulation/$',views.circulation),
+    url(r'^editbaseinfo/$',views.editbaseinfo),
     url(r'^image/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_PATH}),
 )

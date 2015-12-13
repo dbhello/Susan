@@ -36,14 +36,16 @@
 {#							<li id="addbook"><a href="/addbook/">添加图书</a></li>#}
 {#                            <li id="View Member"><a href="/viewmember?userid = {{user.id}}/">浏览成员</a></li>#}
 {#						{% endif %}#}
-{#                        {% if user and user.permission < 2 %}#}
+                        {% if user %}
 						<li id="viewbook"><a href="/viewbook/">浏览图书</a></li>
-{#                        {% endif %}#}
+                        {% endif %}
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
 						{% if user %}
 							<li><p class="navbar-text">欢迎&nbsp;&nbsp;<span id="base_name">{{ user.name }}</span></p></li>
-{#                            <li><a href="/myaccount/">我的账户</a></li>#}
+                            {% if user.permission == 2 %}
+                            <li id="myaccount"><a href="/myaccount/">我的账户</a></li>
+                            {% endif %}
 							<li><a href="/logout/">退出</a></li>
 							<li id="setpasswd"><a href="/setpasswd/">修改密码</a></li>
 						{% else %}
@@ -60,7 +62,7 @@
 		<header id="header-base">
 			<div class="container" >
 				<h2>
-                    图书管理系统
+                    中山大学图书馆
                     {% if user and user.permission == 2 %}
                             {{ user.loc }}
                     {% endif %}

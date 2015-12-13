@@ -1,5 +1,5 @@
 #coding:utf8
-
+import datetime
 
 RATE_CHOICE = (
                    ('excellent','Excellent'),
@@ -15,3 +15,5 @@ RESERVE_STATUS = ((u"已取书",u"已取书"),(u"处理中",u"处理中"),(u"保
 
 LOC_CHOICE = ((u'东校区流通',u'东校区流通'),(u'北校区流通',u'北校区流通'),(u'南校区流通',u'南校区流通'),(u"珠海校区流通",u"珠海校区流通"))
 
+borrowPeriod = datetime.timedelta(days=30)
+reservedPeriod = datetime.timedelta(days=7)

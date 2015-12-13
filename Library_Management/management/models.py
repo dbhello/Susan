@@ -57,32 +57,37 @@ class Book(models.Model):
     author = models.ForeignKey(Author)
     publisher = models.ForeignKey(Publisher)
 
-    class META:
+    class Meta:
         ordering = ['name']
+        verbose_name = '图书'
+        verbose_name_plural = '图书'
 
     def __unicode__(self):
         return self.name
 
 class BookCopy(models.Model):
-    book = models.ForeignKey(Book)
+    book = models.ForeignKey(Book,verbose_name="书名")
     copy_id = models.IntegerField(u"单册编号",primary_key=True)
     barcode = models.CharField(u"条形码",max_length=30)
     status = models.CharField(u"单册状态",max_length=10,choices=BOOK_STATUS,default=u'外借本')
     collection_loc = models.CharField(u"馆藏地点",max_length=10,choices=LOC_CHOICE,default=u'东校区流通')
-    class META:
+    class Meta:
         ordering = ['copy_id']
+        verbose_name = '图书单册'
+        verbose_name_plural = '图书单册'
     def __unicode__(self):
         # return u'%s %s' % (self.copy_id,self.book.name)
         return self.barcode
 
 class Notification(models.Model):
-    librarian = models.ForeignKey(Librarian)
+    pub_person = models.CharField(u"发布人",max_length=20)
     title = models.CharField(u"通知标题",max_length=50)
     time = models.DateTimeField(u"通知时间",default=datetime.datetime.today())
     content = models.TextField(u"通知内容")
-    class META:
+    class Meta:
         ordering = ['time']
-
+        verbose_name = '通知'
+        verbose_name_plural = '通知'
     def __unicode__(self):
         return self.title
 
@@ -98,8 +103,8 @@ class Message(models.Model):
 
 class Reservation(models.Model):
     res_id = models.IntegerField(u"预约编号",primary_key=True)
-    bookcopy = models.ForeignKey(BookCopy)
-    user = models.ForeignKey(Student)
+    bookcopy = models.ForeignKey(BookCopy,verbose_name="图书单册")
+    user = models.ForeignKey(Student,verbose_name="读者")
     resDate = models.DateField(u"预约日期")
     dueDate = models.DateField(u"过期日期")
     satisfyDate = models.DateField(u"满足日期",blank=True,null=True)
@@ -111,8 +116,8 @@ class Reservation(models.Model):
 
 class BorrowInfo(models.Model):
     borrow_id = models.IntegerField(u"借书编号",primary_key=True)
-    bookcopy=models.ForeignKey(BookCopy)
-    user=models.ForeignKey(Student)
+    bookcopy=models.ForeignKey(BookCopy,verbose_name="图书单册")
+    user=models.ForeignKey(Student,verbose_name="读者")
     BorrowDate = models.DateField(u"借书日期")
     ReturnDate = models.DateField(u"还书日期",null=True,blank=True)
 
@@ -121,8 +126,8 @@ class BorrowInfo(models.Model):
 
 class BookEval(models.Model):
     eval_id = models.IntegerField(u"评价编号",primary_key=True)
-    book=models.ForeignKey(Book)
-    user=models.ForeignKey(Student)
+    book=models.ForeignKey(Book,verbose_name="书名")
+    user=models.ForeignKey(Student,verbose_name="读者")
     rate = models.CharField(u"评价等级",max_length=2,choices=RATE_CHOICE,default='excellent')
     evalDesc = models.CharField(u"评价内容",max_length=500)
     evalDate = models.DateField(u"评价时间")

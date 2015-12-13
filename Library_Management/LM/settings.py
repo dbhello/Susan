@@ -26,6 +26,9 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
+TEMPLATE_DIRS = (
+      "/home/liyanp/dbproject/Susan/Library_Management/management/templates",
+)
 
 # Application definition
 
@@ -44,12 +47,14 @@ INSTALLED_APPS = (
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 )
 
 ROOT_URLCONF = 'LM.urls'
@@ -99,9 +104,9 @@ EMAIL_HOST = 'smtp.qq.com'
 
 EMAIL_PORT = '587'
 
-EMAIL_HOST_USER = ''
+EMAIL_HOST_USER = '1935003573@qq.com'
 
-EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST_PASSWORD = 'LypShe2011'
 
 EMAIL_SUBJECT_PREFIX = 'Django'
 

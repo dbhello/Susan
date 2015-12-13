@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load staticfiles %}
-{% block title %}View Book{% endblock %}
+{% block title %}浏览图书{% endblock %}
 
 {% block content %}
 
@@ -29,8 +29,19 @@
 					<form role="form" method="post" name="search_form">
 						{% csrf_token %}
 						<input type="search" class="form-control" name="keywords" placeholder="输入关键字进行查询" id="id_search_input" onkeyup="whenkeyup()" autofocus="True">
-					</form>
+{#                            <input id="radio1" type="radio" name="type" value="book_name" checked /><label for="radio1">书名</label>#}
+{#                            <input id="radio2" type="radio" name="type" value="author" /><label for="radio2">作者</label>#}
+{#                            <input id="radio3" type="radio" name="type" value="pubdate" /><label for="radio3">出版年份</label>#}
+                            {% for i,v,n in zip %}
+                                <input id="{{ i }}" type="radio" name="type" value="{{ v }}" {% if v == search_type %} checked {% endif %}><label for="{{ i }}">{{ n }}</label>
+                            {% endfor %}
+
+                    </form>
 				</div>
+
+
+
+
 				<script type="text/javascript">
 					function whenkeyup () {
 						var oldvalue = document.getElementById('id_search_input').value

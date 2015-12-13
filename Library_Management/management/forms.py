@@ -5,12 +5,12 @@ from models import *
 class UserForm(forms.ModelForm):
     class Meta:
         model = Student
-        fields = ("name","phone","address","loc")
+        fields = ("name","phone","address")
 
 class notificaitonForm(forms.ModelForm):
     class Meta:
         model = Notification
-        fields = ('title','time','content','librarian')
+        fields = ('title','time','content','pub_person')
 
 class BookForm(forms.ModelForm):
     class Meta:

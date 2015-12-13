@@ -3,7 +3,7 @@
 {% get_current_language as LANGUAGE_CODE %}{% get_current_language_bidi as LANGUAGE_BIDI %}
 <html xmlns="http://www.w3.org/1999/xhtml" lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
 <head>
-    <title>{% block title %}{% endblock %}</title>
+    <title>{% block title %}图书管理系统{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
     {% block extrastyle %}{% endblock %}
@@ -65,11 +65,11 @@
                         {% block usertools %}
                         <li class="dropdown">
                             {% block welcome-msg %}
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans 'Welcome,' %} <strong>{% filter force_escape %}{% firstof user.get_short_name user.get_username %}{% endfilter %}</strong> <span class="caret"></span></a>
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">欢迎， <strong>{% filter force_escape %}{% firstof user.get_short_name user.get_username %}{% endfilter %}</strong> <span class="caret"></span></a>
                             {% endblock %}
                             <ul class="dropdown-menu">
                                 {% if site_url %}
-                                    <li><a href="{{ site_url }}">{% trans 'View site' %}</a></li>
+                                    <li><a href="{{ site_url }}">访问我的图书馆</a></li>
                                 {% endif %}
                                 {% if user.is_active and user.is_staff %}
                                     {% url 'django-admindocs-docroot' as docsroot %}
@@ -78,9 +78,9 @@
                                     {% endif %}
                                 {% endif %}
                                 {% if user.has_usable_password %}
-                                <li><a href="{% url 'admin:password_change' %}">{% trans 'Change password' %}</a></li>
+                                <li><a href="{% url 'admin:password_change' %}">修改密码</a></li>
                                 {% endif %}
-                                <li><a href="{% url 'admin:logout' %}">{% trans 'Log out' %}</a></li>
+                                <li><a href="{% url 'admin:logout' %}">退出</a></li>
                             </ul>
                         </li>
                         {% endblock %}
@@ -90,7 +90,7 @@
                         {% endblock languages %}
                         {% block logs %}
                         <li class="dropdown" id="recent-actions-module">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans 'Recent Actions' %} <b class="caret"></b></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">最近动作 <b class="caret"></b></a>
                             {% load log %}
                             {% get_admin_log 10 as admin_log for_user user %}
                             <ul class="dropdown-menu">
@@ -152,7 +152,7 @@
                         {% endblock %}
                     {% block content_title %}
                     {% if title %}
-                        <span class="navbar-brand">{% render_with_template_if_exist title|lower|add:"/admin_app_name.html" title %}</span>
+                        <span class="navbar-brand">图书管理系统</span>
                     {% endif %}
                     {% endblock %}
                     </div>
@@ -180,7 +180,21 @@
     </div>
     <!-- END Content -->
 
-    {% block footer %}<footer id="footer"></footer>{% endblock %}
+    {% block footer %}
+        <footer id="footer"><div class="row row-footer">
+
+        <p align="center">
+本后台系统提供管理界面</br>
+联系我们<i class="fa fa-envelope"></i>:
+<a href="mailto:confusion@food.net">gzlyp2011@163.com</a>
+</address>
+</p>
+
+</div></footer>
+
+
+
+    {% endblock %}
 </div>
 <!-- END Container -->
 

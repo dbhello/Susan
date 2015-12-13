@@ -9,7 +9,7 @@
         <ul>
             {% for notice in notificaiton %}
                 <li><a href="/viewnotification/?id={{ notice.id }}">{{ notice.title }}</a>
-                     {{ notice.librarian.name }}发布于{{ notice.time|date:"Y-m-d"}}</li>
+                     {{ notice.pub_person }}发布于{{ notice.time|date:"Y-m-d"}}</li>
             {% endfor %}
         </ul>
         </div>
