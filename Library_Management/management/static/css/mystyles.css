@@ -1,0 +1,210 @@
+.bodybg{
+    background:#ebebeb;
+    padding-top:0px;
+    background-image:-webkit-linear-gradient(to top, #a7a7a7, #f4f4f4);
+    background-image:linear-gradient(to top,#a7a7a7,#f4f4f4);
+
+}
+.nav-head{
+    min-height: 100px;
+    background-color: #337AB7;
+}
+
+.login-form{
+    min-height: 100px;
+    padding-top: 60px;
+
+}
+.row-footer{
+    padding-top:100px;
+}
+.title{
+  text-align: center;
+  font-family: "微软雅黑";
+  color: white;
+  text-shadow: 2px 2px 4px #999999;
+  font-size: 48px;
+  margin:100px 0;
+}
+.inline{
+    display: inline;
+}
+
+
+
+#student{
+-webkit-animation:bounceInLeft 3s .1s ease both;
+-moz-animation:bounceInLeft 3s .1s ease both;}
+@-webkit-keyframes bounceInLeft{
+0%{opacity:0;
+-webkit-transform:translateX(-1000px)}
+60%{opacity:1;
+-webkit-transform:translateX(30px)}
+80%{-webkit-transform:translateX(-10px)}
+100%{-webkit-transform:translateX(0)}
+}
+@-moz-keyframes bounceInLeft{
+0%{opacity:0;
+-moz-transform:translateX(-2000px)}
+60%{opacity:1;
+-moz-transform:translateX(30px)}
+80%{-moz-transform:translateX(-10px)}
+100%{-moz-transform:translateX(0)}
+}
+#teacher{
+-webkit-animation:bounceInRight 4s .1s ease both;
+-moz-animation:bounceInRight 4s .1s ease both;}
+@-webkit-keyframes bounceInRight{
+0%{opacity:0;
+-webkit-transform:translateX(1000px)}
+60%{opacity:1;
+-webkit-transform:translateX(-30px)}
+80%{-webkit-transform:translateX(10px)}
+100%{-webkit-transform:translateX(0)}
+}
+@-moz-keyframes bounceInRight{
+0%{opacity:0;
+-moz-transform:translateX(2000px)}
+60%{opacity:1;
+-moz-transform:translateX(-30px)}
+80%{-moz-transform:translateX(10px)}
+100%{-moz-transform:translateX(0)}
+}
+.login{
+  margin: 0 20px;
+}
+footer{
+  margin-top: 60px;
+  color: #7d7d7d;
+}
+#rollin{
+-webkit-animation:fadeInDown 1s .2s ease both;
+-moz-animation:fadeInDown 1s .2s ease both;}
+@-webkit-keyframes fadeInDown{
+0%{opacity:0;
+-webkit-transform:translateY(-20px)}
+100%{opacity:1;
+-webkit-transform:translateY(0)}
+}
+@-moz-keyframes fadeInDown{
+0%{opacity:0;
+-moz-transform:translateY(-20px)}
+100%{opacity:1;
+-moz-transform:translateY(0)}
+}
+/*登录页*/
+body {
+  padding-top: 150px;
+  padding-bottom: 40px;
+  background-color: #fff;
+}
+p{
+  text-indent:2em;
+}
+    .form-signin {
+        max-width: 350px;
+        padding: 19px 29px 29px;
+        margin: 0 auto 20px;
+        background-color: rgba(255,255,255,.8);
+        border: 1px solid #e5e5e5;
+        -webkit-border-radius: 5px;
+           -moz-border-radius: 5px;
+                border-radius: 5px;
+        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+           -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+                box-shadow: 0 1px 2px rgba(0,0,0,.05);
+        box-shadow: 1px 1px 8px rgba(0,0,0,.6);
+      }
+      .form-signin .form-signin-heading,
+      .form-signin .checkbox {
+        margin-bottom: 10px;
+      }
+      .form-signin input[type="text"],
+      .form-signin input[type="password"] {
+        font-size: 16px;
+        height: auto;
+        margin-bottom: 15px;
+        padding: 7px 9px;
+      }
+      h2{
+        font-size: 26px;
+        color: #00a1cb;
+        text-shadow:1px 1px 2px rgba(0,0,0,.2);
+        text-align: center;
+      }
+      #btn{
+        display: block;
+        width: 250px;
+        text-decoration: none;
+        font-size:16px;
+        font-weight: bold;
+      }
+      footer>p{
+        color: white;
+        margin-top: 65px;
+      }
+      .dropdown-custom{
+      }
+.table-custom{
+    margin-top: -50px;
+}
+a:hover{
+    text-decoration: none;
+}
+.btn-custom{
+    margin: 0 10px;
+}
+ol li{
+    font-size: 12px;
+}
+ol div{
+    font-size: 12px;
+}
+ul li{
+    list-style: none;
+    padding: 5px 0;
+}
+.breadcrumb {
+padding: 0px 2px;
+margin-bottom: 0px;
+}
+.panel-custom{
+    margin-top: -50px;
+}
+.prp{
+    display: block;
+}
+
+
+/*----------个人资料编辑----------*/
+.form-horizontal .control-label {
+text-align: left;
+}
+
+
+
+.input-group-custom{
+  margin: 30px 0;
+
+}
+.form-control-custom{
+  width: 60% !important;
+}
+
+/*教授个人信息*/
+label{
+  font-size: 14px;
+  color: #4f8dca;
+}
+/*课程简介*/
+.course-intro{
+  margin-top: 40px;
+}
+/*教师首页*/
+.icon{
+    margin-top: 30px;
+}
+/*添加课程*/
+.form-text{
+    width: 60% !important;
+}

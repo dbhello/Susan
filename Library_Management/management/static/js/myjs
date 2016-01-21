@@ -1,0 +1,16 @@
+unction addRow()
+  {
+     var root = document.getElementById("tbody")
+     var allRows = root.getElementsByTagName('tr');
+     var allCells = allRows[0].getElementsByTagName('td');
+     var newRow = root.insertRow();
+     var newCell0 = newRow.insertCell();
+     var newCell1 = newRow.insertCell();
+     var newCell2 = newRow.insertCell();
+     var newCell3 = newRow.insertCell();
+     newCell0.innerHTML = allCells[0].innerHTML;
+     newCell1.innerHTML = allCells[1].innerHTML;
+     newCell2.innerHTML = allCells[2].innerHTML;
+     newCell3.innerHTML = allCells[3].innerHTML;
+
+  }

@@ -44,7 +44,7 @@ class StudentAdmin(admin.ModelAdmin):
 	search_fields = ("user",)
 
 class LibrarianAdmin(admin.ModelAdmin):
-	list_display = ("user","name","phone","address")
+	list_display = ("user","name","phone","loc","address")
 	ordering = ("user",)
 	search_fields = ("user",)
 
